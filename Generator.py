@@ -19,7 +19,6 @@ class Generator(torch.nn.Module):
             torch.nn.ConvTranspose2d(64, 3 4, 2, 1, bias=False),
             torch.nn.Tanh()
         )
-
     def forward(self, input):
         if input.is_cuda:
             output = torch.nn.parallel.data_parallel(self.main, input, range(1))
