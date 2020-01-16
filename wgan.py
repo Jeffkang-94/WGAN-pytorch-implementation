@@ -12,12 +12,12 @@ if not os.path.exists("./models"):
     os.makedirs("./models")
 
 torch.backends.cudnn.benchmark=True
-device=torch.device("cuda:0")
+device=torch.device("cuda:0") # GPU True
 
 dataset = torchvision.datasets.LSUN(root="../data/", classes=["bedroom_train"],transform=torchvision.transforms.Compose([torchvision.transforms.Resize(64), torchvision.transforms.CenterCrop(64), torchvision.transforms.ToTensor(), torchvision.transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5)),]))
 
 assert dataset
-batch_size=64
+batch_size=64 # depending on the GPU
 data_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 generator=Generator().to(device)
@@ -75,6 +75,7 @@ def train_generator(optimizer, fake_data):
 
 print("Training start!")
 f_loss = open("loss.txt","w")
+# refer to a Algorithm of WGAN
 for epoch in range(epochs):
     for i, data in enumerate(data_loader,0):
         for p in discriminator.parameters():
@@ -83,7 +84,7 @@ for epoch in range(epochs):
         while N_critic < 5 and i < len(data_loader):
             j+=1
             D_loss, fake_data = train_discriminator(optimD,data[0])
-            Clampping()
+            Clampping() # clampping parameters 
         G_loss = train_generator(optimG,fake_data)
 
         print("[%d] [%d] G loss : %.5f D_loss : %.5f " %(epoch, i, G_loss.item(), D_loss.item()))
