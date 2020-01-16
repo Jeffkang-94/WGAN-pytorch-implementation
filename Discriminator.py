@@ -17,7 +17,6 @@ class Discriminator(torch.nn.Module):
             torch.nn.LeakyReLU(0.2, inplace=True),
             torch.nn.Conv2d(512, 1, 4, 1, 0, bias=False)
         )
-
     def forward(self, input):
         if input.is_cuda:
             output = torch.nn.parallel.data_parallel(self.main, input, range(1))
@@ -25,5 +24,3 @@ class Discriminator(torch.nn.Module):
             output = self.main(input)
         output = output.mean(0)
         return output.view(1)
-
-
